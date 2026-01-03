@@ -1,0 +1,150 @@
+Metadata-Version: 2.4
+Name: todo
+Version: 0.1.0
+Summary: In-memory Todo CLI application
+Author: Developer
+License: MIT
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+
+# Todo In-Memory Python CLI Application
+
+A fast, reliable, in-memory Todo application that runs entirely in the Ubuntu terminal under WSL. Data exists only for the lifetime of the process and is lost on exit.
+
+## Requirements
+
+- Python 3.11+
+- Ubuntu (WSL2)
+
+## Setup
+
+```bash
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install in development mode with test dependencies
+pip install -e ".[dev]"
+```
+
+## Usage
+
+Run the application using:
+
+```bash
+python -m todo <command> [options]
+```
+
+### Commands
+
+**Add a task:**
+```bash
+python -m todo add "Buy groceries"
+python -m todo add "Submit report" --due 2025-01-15 --priority high --tag work,urgent
+```
+
+**List tasks:**
+```bash
+python -m todo list
+python -m todo list --status open
+python -m todo list --status done
+python -m todo list --tag work
+python -m todo list --sort due
+python -m todo list --sort priority
+```
+
+**Mark task as done:**
+```bash
+python -m todo done 1
+```
+
+**Reopen a task:**
+```bash
+python -m todo reopen 1
+```
+
+**Update a task:**
+```bash
+python -m todo update 1 --title "New title"
+python -m todo update 1 --due 2025-02-01 --priority med --tag updated,tags
+```
+
+**Delete a task:**
+```bash
+python -m todo delete 1
+```
+
+**Clear all completed tasks:**
+```bash
+python -m todo clear-done
+```
+
+**Get help:**
+```bash
+python -m todo --help
+python -m todo add --help
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 2 | Validation error (invalid input) |
+| 3 | Task not found |
+
+## Running Tests
+
+```bash
+python -m pytest -q
+```
+
+## Architecture
+
+The application follows a clean architecture with clear separation of concerns:
+
+```
+src/todo/
+├── __main__.py          # Entry point
+├── cli.py               # CLI layer (argparse)
+├── application/
+│   └── services.py      # Use cases and business logic
+├── domain/
+│   ├── models.py        # Task model and validation
+│   └── errors.py        # Domain errors
+└── repository/
+    └── memory_repo.py   # In-memory data storage
+```
+
+**Layers:**
+
+1. **CLI Layer** - Handles command-line parsing, output formatting, and error display
+2. **Application Layer** - Implements use cases, orchestrates domain and repository
+3. **Domain Layer** - Core business logic, models, and validation rules
+4. **Repository Layer** - Data storage abstraction (in-memory for Phase I)
+
+This architecture is designed to support seamless migration to Phase II (FastAPI + SQLModel) by:
+- Keeping domain logic independent of I/O
+- Using repository pattern for data access
+- Separating validation from persistence
+
+## Phase I Scope
+
+- In-memory storage only (no persistence)
+- Console/CLI interface only
+- No authentication or multi-user support
+- No web API or UI
+
+## License
+
+MIT

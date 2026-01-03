@@ -1,15 +1,3 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
 .venv/
-venv/
+__pycache__/
 .pytest_cache/
-.coverage
-htmlcov/
-.DS_Store
-.vscode/
-.idea/
-.claude/
-.specify/
